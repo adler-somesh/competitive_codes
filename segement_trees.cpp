@@ -16,7 +16,7 @@ private:
         if(i<=low&&j>=high){
             return seg[ind];
         }
-        int mid=(low+high)/2;
+        int mid=(low+high) >> 1;
         int lval=queryhelp(2*ind+1, low, mid, i , j);
         int rval=queryhelp(2*ind+2, mid+1, high, i, j);
         return max(lval,rval);
@@ -27,7 +27,7 @@ private:
             seg[ind]=input[low];
             return;
         }
-        int mid=(low+high)/2;
+        int mid=(low+high) >> 1;
         buildhelp(2*ind+1, low, mid, input);
         buildhelp(2*ind+2, mid+1, high, input);
 
@@ -35,6 +35,17 @@ private:
         seg[ind]=max(seg[2*ind+1], seg[2*ind+2]);
     }
 
+    void updatehelp(int ind, int low, int high, int i, int val) {
+        if (low == high) {
+            seg[ind] = val;
+            return;
+        }
+
+        int mid = (low + high) >> 1;
+        if (i<=mid) updatehelp(2*ind+1, low, mid, i, val);
+        else updatehelp(2*ind+2, mid+1, high, i, val);
+        seg[ind] = max(seg[2*ind + 1], seg[2*ind + 2]);
+    }
 public:
     SGTree(int m){
         n=m;
@@ -54,5 +65,9 @@ public:
 
     int query(int a, int b){
         return queryhelp(0, 0, n-1 , a, b);
+    }
+
+    void update(int i, int val){
+        updatehelp(0, 0, n-1, i, val);
     }
 };
